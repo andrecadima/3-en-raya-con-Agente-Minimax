@@ -1,6 +1,6 @@
-# AGENTEBUSCADOR
+# AGENTE TICTACTOE (USING MINIMAX)
 
-Proyecto mínimo para un **Agente Buscador** con **BFS/DFS** sobre un grafo (Rumania).
+Proyecto mínimo para un **Agente TICTACTOE** con **MINIMAX**.
 
 ## Estructura
 SISTEMASINTELIGENTES/EC1/
@@ -9,7 +9,7 @@ SISTEMASINTELIGENTES/EC1/
 │   ├─ core/              # Clases base (Agente, Entorno)
 │   ├─ agents/            # Agentes específicos
 │   ├─ environments/      # Entornos específicos
-│   ├─ algorithms/        # Algoritmos (bfs, dfs, a*, etc.)
+│   ├─ algorithms/        # Algoritmos (minimax, bfs, dfs, a*, etc.)
 │   └─ data/              # Instancias y grafos
 │
 ├─ main_agente_buscador.py # Script principal para el agente buscador
