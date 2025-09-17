@@ -1,15 +1,27 @@
+# agente___/algorithms/minimax_simple.py
 from __future__ import annotations
-from typing import Dict, List, Optional, Tuple, Literal, Protocol
+from typing import Dict, List, Optional, Literal, Protocol, Any, Iterable
 
 Jugador = Literal["MAX", "MIN"]
 
 class EntornoMinimax(Protocol):
-    def sucesores(self, nodo: str) -> List[str]: ...
-    def es_terminal(self, nodo: str) -> bool: ...
-    def utilidad(self, nodo: str) -> float: ...
+    def es_terminal(self, estado: Any) -> bool: ...
+    def utilidad(self, estado: Any) -> float: ...
+    # Nota: algunos entornos definen sucesores(estado, jugador) y otros sucesores(estado)
+    # Nosotros soportaremos ambos.
 
-def MiniMax(env: EntornoMinimax, estado: str, jugador: Jugador,
-            etiquetas: Optional[Dict[str, float]] = None) -> float:
+def _sucesores(env: Any, estado: Any, jugador: Jugador) -> Iterable[Any]:
+    """
+    Intenta llamar env.sucesores con (estado, jugador). Si el entorno
+    acepta solo (estado), lo usamos sin el jugador.
+    """
+    try:
+        return env.sucesores(estado, jugador)  # entornos tipo TresEnRaya
+    except TypeError:
+        return env.sucesores(estado)           # entornos tipo GrafoEspecifico
+
+def MiniMax(env: EntornoMinimax, estado: Any, jugador: Jugador,
+            etiquetas: Optional[Dict[Any, float]] = None) -> float:
     if env.es_terminal(estado):
         v = env.utilidad(estado)
         if etiquetas is not None:
@@ -25,16 +37,16 @@ def MiniMax(env: EntornoMinimax, estado: str, jugador: Jugador,
         etiquetas[estado] = v
     return v
 
-def valorMax(env: EntornoMinimax, estado: str,
-             etiquetas: Optional[Dict[str, float]] = None) -> float:
+def valorMax(env: EntornoMinimax, estado: Any,
+             etiquetas: Optional[Dict[Any, float]] = None) -> float:
     v = float("-inf")
-    for hijo in env.sucesores(estado):
+    for hijo in _sucesores(env, estado, "MAX"):
         v = max(v, MiniMax(env, hijo, "MIN", etiquetas))
     return v
 
-def valorMin(env: EntornoMinimax, estado: str,
-             etiquetas: Optional[Dict[str, float]] = None) -> float:
+def valorMin(env: EntornoMinimax, estado: Any,
+             etiquetas: Optional[Dict[Any, float]] = None) -> float:
     v = float("+inf")
-    for hijo in env.sucesores(estado):
+    for hijo in _sucesores(env, estado, "MIN"):
         v = min(v, MiniMax(env, hijo, "MAX", etiquetas))
     return v
